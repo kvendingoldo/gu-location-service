@@ -1,0 +1,155 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Documentation's GU location service",
+        "title": "GU location service",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Alexander Sharov",
+            "url": "http://github.com/kvendingoldo",
+            "email": "kvendingoldo@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1",
+    "paths": {
+        "/distance": {
+            "get": {
+                "description": "TODO",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Get user distance by range",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/locations.NewDistanceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/location": {
+            "put": {
+                "description": "Update location on the system",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Update location",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/locations.NewLocationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Get all users on the system",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Get location",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/locations.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/locations.MessageResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "locations.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "locations.NewDistanceRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "800"
+                },
+                "range": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1
+                },
+                "username": {
+                    "type": "string",
+                    "example": "Bill"
+                }
+            }
+        },
+        "locations.NewLocationRequest": {
+            "type": "object",
+            "required": [
+                "coordinates"
+            ],
+            "properties": {
+                "coordinates": {
+                    "type": "string",
+                    "example": "39.12355, 27.64538"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "800"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "Bill"
+                }
+            }
+        }
+    }
+}

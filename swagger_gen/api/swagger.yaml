@@ -1,0 +1,104 @@
+basePath: /v1
+definitions:
+  locations.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  locations.NewDistanceRequest:
+    properties:
+      id:
+        example: "800"
+        type: string
+      range:
+        example: 1
+        minimum: 0
+        type: integer
+      username:
+        example: Bill
+        type: string
+    type: object
+  locations.NewLocationRequest:
+    properties:
+      coordinates:
+        example: 39.12355, 27.64538
+        type: string
+      id:
+        example: "800"
+        type: string
+      username:
+        example: Bill
+        type: string
+    required:
+    - coordinates
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: kvendingoldo@gmail.com
+    name: Alexander Sharov
+    url: http://github.com/kvendingoldo
+  description: Documentation's GU location service
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: GU location service
+  version: "1.0"
+paths:
+  /distance:
+    get:
+      description: TODO
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/locations.NewDistanceRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      summary: Get user distance by range
+      tags:
+      - location
+  /location:
+    put:
+      description: Update location on the system
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/locations.NewLocationRequest'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Update location
+      tags:
+      - location
+  /users:
+    get:
+      description: Get all users on the system
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/locations.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/locations.MessageResponse'
+      summary: Get location
+      tags:
+      - location
+swagger: "2.0"
