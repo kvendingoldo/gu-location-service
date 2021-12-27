@@ -7,18 +7,19 @@ import (
 )
 
 type NewLocationRequest struct {
-	ID          string `json:"id" example:"800" binding:"optional"`
-	Username    string `json:"username" example:"Bill" binding:"optional"`
-	Coordinates string `json:"coordinates" example:"39.12355, 27.64538"  binding:"required"`
+	UID         int64  `json:"uid,omitempty" example:"800"`
+	Username    string `json:"username,omitempty" example:"Bill"`
+	Coordinates string `json:"coordinates" example:"39.12355, 27.64538" binding:"required"`
 }
 
 func (r *NewLocationRequest) validate() error {
-	if r.ID == "" && r.Username == "" {
+	if r.UID == 0 && r.Username == "" {
 		return errors.New("At least one of id || username should be not empty")
 	}
 
+	fmt.Println("===")
 	err := utils.ValidateUsername(r.Username)
-	fmt.Println(err)
+
 	if err != nil {
 		return err
 	}
@@ -42,8 +43,8 @@ func (r *NewSearchRequest) validate() error {
 }
 
 type NewDistanceRequest struct {
-	ID       string `json:"id" example:"800" binding:"optional"`
-	Username string `json:"username" example:"Bill" binding:"optional"`
+	ID       string `json:"id,omitempty" example:"800"`
+	Username string `json:"username,omitempty" example:"Bill"`
 	Range    int    `json:"range" example:"1"  binding:"optional,min=0"`
 }
 

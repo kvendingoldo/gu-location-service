@@ -23,9 +23,9 @@ definitions:
       coordinates:
         example: 39.12355, 27.64538
         type: string
-      id:
-        example: "800"
-        type: string
+      uid:
+        example: 800
+        type: integer
       username:
         example: Bill
         type: string

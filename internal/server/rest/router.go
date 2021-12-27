@@ -32,7 +32,7 @@ func ApplicationRouter(router *gin.Engine) {
 		}
 
 		// Locations
-		v1Locations := v1.Group("/location")
+		v1Locations := v1.Group("/")
 		{
 			v1Locations.GET("/distance", locations.GetDistance)
 			v1Locations.GET("/search", locations.SearchByRadius)

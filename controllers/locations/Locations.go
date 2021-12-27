@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/kvendingoldo/gu-location-service/controllers"
-	"github.com/kvendingoldo/gu-location-service/model/errors"
+	"github.com/kvendingoldo/gu-location-service/model"
+
+	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
 	"net/http"
-	"strconv"
 )
 
 // GetLocation godoc
@@ -47,7 +48,7 @@ func GetDistance(c *gin.Context) {
 	//var req NewDistanceRequest
 	//
 	//if err := controllers.BindJSON(c, &req); err != nil {
-	//	//appError := errors.NewAppError(err, errors.ValidationError)
+	//	//appError := guErrors.NewAppError(err, guErrors.ValidationError)
 	//	//_ = c.Error(appError)
 	//	return
 	//}
@@ -86,51 +87,39 @@ func GetDistance(c *gin.Context) {
 func UpdateLocation(c *gin.Context) {
 	var req NewLocationRequest
 	if err := controllers.BindJSON(c, &req); err != nil {
-		appError := errors.NewAppError(err, errors.ValidationError)
+		appError := guErrors.NewAppError(err, guErrors.ValidationError)
 		_ = c.Error(appError)
 		return
 	}
 
 	err := req.validate()
 	if err != nil {
-		// TODO
-		fmt.Println("ERROR VALIDATE")
-
+		appError := guErrors.NewAppError(err, guErrors.ValidationError)
+		_ = c.Error(appError)
+		return
 	}
+
+	fmt.Println("!!!")
+	fmt.Println(req)
 
 	var uid int64
-	//:id::username:coordinates
-
-	uidRaw := c.Query("uid")
-	if uidRaw != "" {
-		var err error
-		uid, err = strconv.ParseInt(uidRaw, 10, 64)
-		if err != nil {
-			//appError := errorModels.NewAppError(errors.New("param id is necessary in the url"), errorModels.ValidationError)
-			//_ = c.Error(appError)
-			fmt.Println("eror")
-			fmt.Println(err)
-			return
-		}
+	if req.UID == 0 {
+		// todo
+		uid = 0
+	} else {
+		uid = req.UID
 	}
 
-	username := c.Query("username")
-	coordinates := c.Query("coordinates")
-
-	if uid == 0 {
-		// make req to user service
-		// get uid
+	location := &model.Location{
+		UID:         uid,
+		Coordinates: req.Coordinates,
 	}
 
-	fmt.Println(uid)
-	fmt.Println(username)
-	fmt.Println(coordinates)
-
-	//err = model.UpdateLocation(uid, coordinates)
-	//if err != nil {
-	//	//_ = c.Error(err)
-	//	return
-	//}
+	err = model.UpdateLocation(location)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
 
 	c.JSON(http.StatusOK, "")
 }

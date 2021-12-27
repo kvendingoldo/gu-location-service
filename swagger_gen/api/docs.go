@@ -155,9 +155,9 @@ var doc = `{
                     "type": "string",
                     "example": "39.12355, 27.64538"
                 },
-                "id": {
-                    "type": "string",
-                    "example": "800"
+                "uid": {
+                    "type": "integer",
+                    "example": 800
                 },
                 "username": {
                     "type": "string",

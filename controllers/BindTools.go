@@ -12,7 +12,7 @@ func BindJSON(c *gin.Context, request interface{}) (err error) {
 	num, _ := c.Request.Body.Read(buf)
 	reqBody := string(buf[0:num])
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(reqBody)))
-	err = c.ShouldBindJSON(request)
+	err = c.BindJSON(request)
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(reqBody)))
 	return
 }

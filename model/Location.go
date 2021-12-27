@@ -1,6 +1,12 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/kvendingoldo/gu-location-service/config"
+	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
+
+	"time"
+)
 
 type Location struct {
 	ID          int64  `json:"id" example:"23" gorm:"primaryKey"`
@@ -11,29 +17,24 @@ type Location struct {
 }
 
 // UpdateLocation ... Update location
-func UpdateLocation(id int64, coordinates string) (err error) {
-	//user.ID = id
-	//err = config.Config.DB.Model(&user).
-	//	Select("name", "coordinates").
-	//	Updates(userMap).Error
-	//
-	//err = config.Config.DB.Save(user).Error
-	//if err != nil {
-	//	byteErr, _ := json.Marshal(err)
-	//	var newError modelErrors.GormErr
-	//	err = json.Unmarshal(byteErr, &newError)
-	//	if err != nil {
-	//		return
-	//	}
-	//	switch newError.Number {
-	//	case 1062:
-	//		err = modelErrors.NewAppErrorWithType(modelErrors.ResourceAlreadyExists)
-	//		return
-	//	default:
-	//		err = modelErrors.NewAppErrorWithType(modelErrors.UnknownError)
-	//	}
-	//}
-	//
-	//err = config.Config.DB.Where("id = ?", id).First(&user).Error
+func UpdateLocation(location *Location) (err error) {
+	err = config.Config.DB.Create(location).Error
+	if err != nil {
+		byteErr, _ := json.Marshal(err)
+		var newError guErrors.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return err
+		}
+
+		switch newError.Number {
+		case 1062:
+			err = guErrors.NewAppErrorWithType(guErrors.ResourceAlreadyExists)
+			return
+		default:
+			err = guErrors.NewAppErrorWithType(guErrors.UnknownError)
+		}
+	}
+
 	return
 }
