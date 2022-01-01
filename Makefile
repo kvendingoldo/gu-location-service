@@ -12,9 +12,12 @@ vet: ## Run go vet against code.
 swag:
 	swag init -g internal/server/rest/*.go --output ./swagger_gen/api
 
-build: swag fmt vet  ## Build service binary.
+build: swag fmt vet ## Build service binary.
 	go build -o bin/service cmd/app/main.go
 
 run: swag fmt vet ## Run service from your laptop.
 	go run ./cmd/app/main.go
 
+##@ Test
+test:
+	go test ./...
