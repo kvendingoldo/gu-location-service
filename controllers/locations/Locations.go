@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kvendingoldo/gu-location-service/controllers"
 	"github.com/kvendingoldo/gu-location-service/model"
+	"strconv"
 
 	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
 	"net/http"
@@ -12,12 +13,12 @@ import (
 
 // GetLocation godoc
 // @Tags location
-// @Summary Get location
-// @Description Get all users on the system
+// @Summary Search in some location within the provided radius.
+// @Description Search for users in some location within the provided radius (with pagination).
 // @Success 200 {object} int
 // @Failure 400 {object} MessageResponse
 // @Failure 500 {object} MessageResponse
-// @Router /users [get]
+// @Router /location [get]
 func SearchByRadius(c *gin.Context) {
 	//:coordinates:radius
 
@@ -33,54 +34,44 @@ func SearchByRadius(c *gin.Context) {
 	c.JSON(http.StatusOK, "")
 }
 
+// TODO
+// name type datatype mandatory comment
+
 // GetDistance godoc
 // @Tags location
-// @Summary Get user distance by range
-// @Description TODO
-// @Param data body NewDistanceRequest true "body data"
+// @Summary Returns distance traveled by a person within some date/time range (in days).
+// @Description Returns distance traveled by a person within some date/time range (in days).
+// @Param uid query int true "id of user"
+// @Param range query string false "time range"
 // @Success 200 {object} int
 // TODO @Failure 400 {object} MessageResponse
 // TODO @Failure 500 {object} MessageResponse
 // @Router /distance [get]
 func GetDistance(c *gin.Context) {
-	//:id:range
+	uid, err := strconv.Atoi(c.Query("uid"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	//var req NewDistanceRequest
-	//
-	//if err := controllers.BindJSON(c, &req); err != nil {
-	//	//appError := guErrors.NewAppError(err, guErrors.ValidationError)
-	//	//_ = c.Error(appError)
-	//	return
-	//}
-	//
-	//err := updateValidation(requestMap)
-	//if err != nil {
-	//	//_ = c.Error(err)
-	//	return
-	//}
-	//
-	////default range 1 day
-	//var distance int
-	//
-	//userID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	//if err != nil {
-	//	return
-	//}
-	//
-	//err = model.GetUserByID(&user, userID)
-	//if err != nil {
-	//	//appError := errorModels.NewAppError(err, errorModels.ValidationError)
-	//	//_ = c.Error(appError)
-	//	return
-	//}
+	timeRange := "-1h"
+	if reqTimeRange, ok := c.GetQuery("range"); ok {
+		timeRange = reqTimeRange
+	}
 
-	c.JSON(http.StatusOK, "")
+	distance, err := model.GetDistance(uid, timeRange)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, distance)
 }
 
 // UpdateLocation godoc
 // @Tags location
-// @Summary Update location
-// @Description Update location on the system
+// @Summary Update current user location by the username/uid.
+// @Description Update current user location by the username/uid.
 // @Param data body NewLocationRequest true "body data"
 // @Success 200 {string} string	"ok"
 // @Router /location [put]
@@ -98,9 +89,6 @@ func UpdateLocation(c *gin.Context) {
 		_ = c.Error(appError)
 		return
 	}
-
-	fmt.Println("!!!")
-	fmt.Println(req)
 
 	var uid int64
 	if req.UID == 0 {

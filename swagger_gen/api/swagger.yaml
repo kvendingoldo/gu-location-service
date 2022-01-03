@@ -5,19 +5,6 @@ definitions:
       message:
         type: string
     type: object
-  locations.NewDistanceRequest:
-    properties:
-      id:
-        example: "800"
-        type: string
-      range:
-        example: 1
-        minimum: 0
-        type: integer
-      username:
-        example: Bill
-        type: string
-    type: object
   locations.NewLocationRequest:
     properties:
       coordinates:
@@ -48,43 +35,31 @@ info:
 paths:
   /distance:
     get:
-      description: TODO
+      description: Returns distance traveled by a person within some date/time range
+        (in days).
       parameters:
-      - description: body data
-        in: body
-        name: data
+      - description: id of user
+        in: query
+        name: uid
         required: true
-        schema:
-          $ref: '#/definitions/locations.NewDistanceRequest'
+        type: integer
+      - description: time range
+        in: query
+        name: range
+        type: string
       responses:
         "200":
           description: OK
           schema:
             type: integer
-      summary: Get user distance by range
+      summary: Returns distance traveled by a person within some date/time range (in
+        days).
       tags:
       - location
   /location:
-    put:
-      description: Update location on the system
-      parameters:
-      - description: body data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/locations.NewLocationRequest'
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-      summary: Update location
-      tags:
-      - location
-  /users:
     get:
-      description: Get all users on the system
+      description: Search for users in some location within the provided radius (with
+        pagination).
       responses:
         "200":
           description: OK
@@ -98,7 +73,24 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/locations.MessageResponse'
-      summary: Get location
+      summary: Search in some location within the provided radius.
+      tags:
+      - location
+    put:
+      description: Update current user location by the username/uid.
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/locations.NewLocationRequest'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Update current user location by the username/uid.
       tags:
       - location
 swagger: "2.0"

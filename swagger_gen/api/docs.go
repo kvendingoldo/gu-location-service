@@ -34,20 +34,24 @@ var doc = `{
     "paths": {
         "/distance": {
             "get": {
-                "description": "TODO",
+                "description": "Returns distance traveled by a person within some date/time range (in days).",
                 "tags": [
                     "location"
                 ],
-                "summary": "Get user distance by range",
+                "summary": "Returns distance traveled by a person within some date/time range (in days).",
                 "parameters": [
                     {
-                        "description": "body data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/locations.NewDistanceRequest"
-                        }
+                        "type": "integer",
+                        "description": "id of user",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "time range",
+                        "name": "range",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -61,40 +65,12 @@ var doc = `{
             }
         },
         "/location": {
-            "put": {
-                "description": "Update location on the system",
-                "tags": [
-                    "location"
-                ],
-                "summary": "Update location",
-                "parameters": [
-                    {
-                        "description": "body data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/locations.NewLocationRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
             "get": {
-                "description": "Get all users on the system",
+                "description": "Search for users in some location within the provided radius (with pagination).",
                 "tags": [
                     "location"
                 ],
-                "summary": "Get location",
+                "summary": "Search in some location within the provided radius.",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -115,6 +91,32 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Update current user location by the username/uid.",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Update current user location by the username/uid.",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/locations.NewLocationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     },
@@ -124,24 +126,6 @@ var doc = `{
             "properties": {
                 "message": {
                     "type": "string"
-                }
-            }
-        },
-        "locations.NewDistanceRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "800"
-                },
-                "range": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "example": 1
-                },
-                "username": {
-                    "type": "string",
-                    "example": "Bill"
                 }
             }
         },

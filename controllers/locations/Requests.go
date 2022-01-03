@@ -42,14 +42,15 @@ func (r *NewSearchRequest) validate() error {
 	return utils.ValidateCoordinates(r.Coordinates)
 }
 
+// TODO: delete
 type NewDistanceRequest struct {
-	ID       string `json:"id,omitempty" example:"800"`
+	ID       int    `json:"id,omitempty" example:"800"`
 	Username string `json:"username,omitempty" example:"Bill"`
-	Range    int    `json:"range" example:"1"  binding:"optional,min=0"`
+	Range    string `json:"range" example:"-1.5h"  binding:"optional"`
 }
 
 func (r *NewDistanceRequest) validate() error {
-	if r.ID == "" && r.Username == "" {
+	if r.ID == 0 && r.Username == "" {
 		return errors.New("At least one of id || username should be not empty")
 	}
 
