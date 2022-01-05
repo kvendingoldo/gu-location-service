@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/kvendingoldo/gu-location-service/controllers"
+	"github.com/kvendingoldo/gu-location-service/internal/utils"
 	"github.com/kvendingoldo/gu-location-service/model"
 	"strconv"
 
@@ -15,23 +16,34 @@ import (
 // @Tags location
 // @Summary Search in some location within the provided radius.
 // @Description Search for users in some location within the provided radius (with pagination).
+// @Param coordinate query string true "search center "
+// @Param radius query number false "radius (in meters)"
 // @Success 200 {object} int
 // @Failure 400 {object} MessageResponse
 // @Failure 500 {object} MessageResponse
-// @Router /location [get]
+// @Router /search [get]
 func SearchByRadius(c *gin.Context) {
-	//:coordinates:radius
+	coordinate := c.Query("coordinate")
 
-	//var users []model.User
-	//
-	//err := model.GetAllUsers(&users)
-	//if err != nil {
-	//	//appError := errorModels.NewAppErrorWithType(errorModels.UnknownError)
-	//	//_ = c.Error(appError)
-	//	return
-	//}
+	radius := 100.0
+	if reqRadius, ok := c.GetQuery("radius"); ok {
+		if parsedRadius, err := strconv.ParseFloat(reqRadius, 64); err == nil {
+			radius = parsedRadius
+		}
+	}
 
-	c.JSON(http.StatusOK, "")
+	pagination := utils.GeneratePaginationFromRequest(c)
+	locations, err := model.SearchLocationsWithinRadius(coordinate, radius, &pagination)
+	if err != nil {
+		// TODO
+	}
+
+	uids := []int64{}
+	for _, location := range locations {
+		uids = append(uids, location.UID)
+	}
+
+	c.JSON(http.StatusOK, uids)
 }
 
 // TODO

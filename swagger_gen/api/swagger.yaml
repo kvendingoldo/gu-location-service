@@ -57,25 +57,6 @@ paths:
       tags:
       - location
   /location:
-    get:
-      description: Search for users in some location within the provided radius (with
-        pagination).
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: integer
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/locations.MessageResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/locations.MessageResponse'
-      summary: Search in some location within the provided radius.
-      tags:
-      - location
     put:
       description: Update current user location by the username/uid.
       parameters:
@@ -91,6 +72,36 @@ paths:
           schema:
             type: string
       summary: Update current user location by the username/uid.
+      tags:
+      - location
+  /search:
+    get:
+      description: Search for users in some location within the provided radius (with
+        pagination).
+      parameters:
+      - description: 'search center '
+        in: query
+        name: coordinate
+        required: true
+        type: string
+      - description: radius (in meters)
+        in: query
+        name: radius
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/locations.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/locations.MessageResponse'
+      summary: Search in some location within the provided radius.
       tags:
       - location
 swagger: "2.0"

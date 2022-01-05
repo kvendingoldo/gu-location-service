@@ -4,7 +4,10 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
+	"os"
+	"time"
 )
 
 var Config AppConfig
@@ -40,6 +43,18 @@ func init() {
 		DontSupportRenameColumn:   true,       // `change` when rename column, rename column not supported before MySQL 8, MariaDB
 		SkipInitializeWithVersion: false,      // auto configure based on currently MySQL version
 	}), &gorm.Config{})
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Info, // Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,       // Disable color
+		},
+	)
+
+	db.Logger = newLogger
 
 	if err != nil {
 		// TODO: Add later

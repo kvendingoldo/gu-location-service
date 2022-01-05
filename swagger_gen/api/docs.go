@@ -65,33 +65,6 @@ var doc = `{
             }
         },
         "/location": {
-            "get": {
-                "description": "Search for users in some location within the provided radius (with pagination).",
-                "tags": [
-                    "location"
-                ],
-                "summary": "Search in some location within the provided radius.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/locations.MessageResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/locations.MessageResponse"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "Update current user location by the username/uid.",
                 "tags": [
@@ -114,6 +87,50 @@ var doc = `{
                         "description": "ok",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "description": "Search for users in some location within the provided radius (with pagination).",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Search in some location within the provided radius.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "search center ",
+                        "name": "coordinate",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "radius (in meters)",
+                        "name": "radius",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/locations.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/locations.MessageResponse"
                         }
                     }
                 }
