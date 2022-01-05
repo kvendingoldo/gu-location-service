@@ -3,7 +3,6 @@ package model
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kvendingoldo/gu-location-service/config"
 	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
 	"github.com/kvendingoldo/gu-location-service/pkg/distance"
 	"time"
@@ -15,7 +14,7 @@ func (location *Location) TableName() string {
 
 // UpdateLocation ... Update location
 func UpdateLocation(location *Location) (err error) {
-	err = config.Config.DB.Create(location).Error
+	err = db.Create(location).Error
 	if err != nil {
 		byteErr, _ := json.Marshal(err)
 		var newError guErrors.GormErr
@@ -69,9 +68,9 @@ func GetLatestUserLocations(pagination *Pagination) ([]Location, error) {
 	var locations []Location
 
 	offset := (pagination.Page - 1) * pagination.Limit
-	queryBuider := config.Config.DB.Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
+	queryBuider := db.Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
 
-	subQuery := config.Config.DB.
+	subQuery := db.
 		Model(&Location{}).
 		Select("uid, max(created_at) as created_at").Group("uid")
 
@@ -118,7 +117,7 @@ func getLocationsByRange(uid int, timeRange string) ([]Location, error) {
 		fmt.Println(err)
 	}
 
-	config.Config.DB.Where(
+	db.Where(
 		"created_at >= ? and uid = ?", time.Now().Add(delta), uid,
 	).Find(&locations)
 

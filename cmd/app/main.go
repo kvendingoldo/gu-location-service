@@ -3,26 +3,29 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	cfg "github.com/kvendingoldo/gu-location-service/config"
+	"github.com/kvendingoldo/gu-location-service/config"
 	"github.com/kvendingoldo/gu-location-service/internal/server/rest"
 	"github.com/kvendingoldo/gu-location-service/model"
+	"github.com/kvendingoldo/gu-location-service/pkg/logger"
 	"log"
 )
 
 func startHTTPServer() {
-	ginRouter := gin.Default()
+	router := gin.New()
+	router.Use(logger.GinLogger(config.Config.Logger), gin.Recovery())
+	rest.ApplicationRouter(router)
 
-	rest.ApplicationRouter(ginRouter)
-
-	if err := ginRouter.Run(fmt.Sprintf(":%v", cfg.Config.RestPort)); err != nil {
-		log.Fatalf("could not start http server: %v", err)
+	if err := router.Run(fmt.Sprintf(":%v", config.Config.RestPort)); err != nil {
+		log.Fatalf("Could not start HTTP server: %v", err)
 	}
 }
 
 func init() {
-	if err := cfg.Config.DB.AutoMigrate(&model.Location{}); err != nil {
-		return
+	err := config.Setup()
+	if err != nil {
+		fmt.Println(err)
 	}
+	model.Setup()
 }
 
 func main() {
