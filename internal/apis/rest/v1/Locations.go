@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 
-	http2 "github.com/kvendingoldo/gu-location-service/internal/controller/rest"
-	"github.com/kvendingoldo/gu-location-service/internal/model"
+	http2 "github.com/kvendingoldo/gu-location-service/internal/apis/rest"
+	"github.com/kvendingoldo/gu-location-service/internal/models"
 	"strconv"
 
 	commonLibUtils "github.com/kvendingoldo/gu-common/pkg/utils"
@@ -72,7 +72,7 @@ func SearchByRadius(c *gin.Context) {
 	}
 
 	pagination := commonLibUtils.GeneratePaginationFromRequest(c)
-	locations, err := model.SearchLocationsWithinRadius(lat, lon, radius, &pagination)
+	locations, err := models.SearchLocationsWithinRadius(lat, lon, radius, &pagination)
 	if err != nil {
 		// TODO: error
 	}
@@ -110,7 +110,7 @@ func GetDistance(c *gin.Context) {
 		timeRange = reqTimeRange
 	}
 
-	distance, err := model.GetDistance(uid, timeRange)
+	distance, err := models.GetDistance(uid, timeRange)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -149,13 +149,13 @@ func UpdateLocation(c *gin.Context) {
 		uid = req.UID
 	}
 
-	location := &model.Location{
+	location := &models.Location{
 		UID:       uid,
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
 	}
 
-	err = model.UpdateLocation(location)
+	err = models.UpdateLocation(location)
 	if err != nil {
 		_ = c.Error(err)
 		return

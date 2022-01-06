@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"github.com/kvendingoldo/gu-location-service/config"

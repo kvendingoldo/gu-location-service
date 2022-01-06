@@ -5,8 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	guLogger "github.com/kvendingoldo/gu-common/pkg/logger"
 	"github.com/kvendingoldo/gu-location-service/config"
-	v1 "github.com/kvendingoldo/gu-location-service/internal/controller/rest/v1"
-	"github.com/kvendingoldo/gu-location-service/internal/model"
+	v1 "github.com/kvendingoldo/gu-location-service/internal/apis/rest/v1"
+	"github.com/kvendingoldo/gu-location-service/internal/models"
+	proto "github.com/kvendingoldo/gu-location-service/proto_gen/api"
+	"google.golang.org/grpc"
 	"log"
 )
 
@@ -25,9 +27,16 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	model.Setup()
+	models.Setup()
 }
 
 func main() {
+	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	_ = proto.NewUserServiceClient(conn)
+
 	startHTTPServer()
 }
