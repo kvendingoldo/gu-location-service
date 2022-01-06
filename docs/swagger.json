@@ -1,0 +1,160 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/distance": {
+            "get": {
+                "description": "Returns distance traveled by a person within some date/time range (in days).",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Returns distance traveled by a person within some date/time range (in days).",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id of user",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "time range",
+                        "name": "range",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/location": {
+            "put": {
+                "description": "Update current user location by the username/uid.",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Update current user location by the username/uid.",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.NewLocationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Search for users in some location within the provided radius (with pagination).",
+                "tags": [
+                    "location"
+                ],
+                "summary": "Search users in some location within the provided radius.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Center latitude",
+                        "name": "lat",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Center longitude",
+                        "name": "lon",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "radius",
+                        "name": "radius",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "radius (m|km|mi|ft)",
+                        "name": "units",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.MessageResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "v1.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.NewLocationRequest": {
+            "type": "object",
+            "required": [
+                "lat",
+                "lon"
+            ],
+            "properties": {
+                "lat": {
+                    "type": "number",
+                    "example": 39.12355
+                },
+                "lon": {
+                    "type": "number",
+                    "example": 27.64538
+                },
+                "uid": {
+                    "type": "integer",
+                    "example": 800
+                },
+                "username": {
+                    "type": "string",
+                    "example": "Bill"
+                }
+            }
+        }
+    }
+}

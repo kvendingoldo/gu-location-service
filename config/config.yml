@@ -1,0 +1,7 @@
+ports:
+  rest: 8080
+  grpc: 9090
+
+db:
+  dsn: "guadmin:gupass@tcp(127.0.0.1:3306)/location?charset=utf8&parseTime=True&loc=Local"
+  logLevel: "INFO"

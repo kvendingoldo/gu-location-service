@@ -1,0 +1,120 @@
+basePath: /v1
+definitions:
+  v1.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  v1.NewLocationRequest:
+    properties:
+      lat:
+        example: 39.12355
+        type: number
+      lon:
+        example: 27.64538
+        type: number
+      uid:
+        example: 800
+        type: integer
+      username:
+        example: Bill
+        type: string
+    required:
+    - lat
+    - lon
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: kvendingoldo@gmail.com
+    name: Alexander Sharov
+    url: http://github.com/kvendingoldo
+  description: Documentation's GU location service
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: GU location service
+  version: "1.0"
+paths:
+  /distance:
+    get:
+      description: Returns distance traveled by a person within some date/time range
+        (in days).
+      parameters:
+      - description: id of user
+        in: query
+        name: uid
+        required: true
+        type: integer
+      - description: time range
+        in: query
+        name: range
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      summary: Returns distance traveled by a person within some date/time range (in
+        days).
+      tags:
+      - location
+  /location:
+    put:
+      description: Update current user location by the username/uid.
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/v1.NewLocationRequest'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Update current user location by the username/uid.
+      tags:
+      - location
+  /users:
+    get:
+      description: Search for users in some location within the provided radius (with
+        pagination).
+      parameters:
+      - description: Center latitude
+        in: query
+        name: lat
+        required: true
+        type: string
+      - description: Center longitude
+        in: query
+        name: lon
+        required: true
+        type: string
+      - description: radius
+        in: query
+        name: radius
+        type: number
+      - description: radius (m|km|mi|ft)
+        in: query
+        name: units
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.MessageResponse'
+      summary: Search users in some location within the provided radius.
+      tags:
+      - location
+swagger: "2.0"
