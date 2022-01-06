@@ -7,9 +7,12 @@ definitions:
     type: object
   locations.NewLocationRequest:
     properties:
-      coordinates:
-        example: 39.12355, 27.64538
-        type: string
+      lat:
+        example: 39.12355
+        type: number
+      lon:
+        example: 27.64538
+        type: number
       uid:
         example: 800
         type: integer
@@ -17,7 +20,8 @@ definitions:
         example: Bill
         type: string
     required:
-    - coordinates
+    - lat
+    - lon
     type: object
 host: localhost:8080
 info:
@@ -74,20 +78,29 @@ paths:
       summary: Update current user location by the username/uid.
       tags:
       - location
-  /search:
+  /users:
     get:
       description: Search for users in some location within the provided radius (with
         pagination).
       parameters:
-      - description: 'search center '
+      - description: Center latitude
         in: query
-        name: coordinate
+        name: lat
         required: true
         type: string
-      - description: radius (in meters)
+      - description: Center longitude
+        in: query
+        name: lon
+        required: true
+        type: string
+      - description: radius
         in: query
         name: radius
         type: number
+      - description: radius (m|km|mi|ft)
+        in: query
+        name: units
+        type: string
       responses:
         "200":
           description: OK
@@ -101,7 +114,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/locations.MessageResponse'
-      summary: Search in some location within the provided radius.
+      summary: Search users in some location within the provided radius.
       tags:
       - location
 swagger: "2.0"

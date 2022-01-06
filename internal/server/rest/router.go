@@ -35,7 +35,7 @@ func ApplicationRouter(router *gin.Engine) {
 		v1Locations := v1.Group("/")
 		{
 			v1Locations.GET("/distance", locations.GetDistance)
-			v1Locations.GET("/search", locations.SearchByRadius)
+			v1Locations.GET("/users", locations.SearchByRadius)
 			v1Locations.PUT("/location", locations.UpdateLocation)
 		}
 	}

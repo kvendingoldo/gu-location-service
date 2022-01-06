@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-func TestCalculateDistanceInKm_1(t *testing.T) {
-	coordinates := []string{
-		"35.12314, 27.64532",
-		"39.12355, 27.64538",
-		"35.12314, 27.64532",
+func TestCalculateDistance_1(t *testing.T) {
+	coordinates := []Coordinate{
+		{35.12314, 27.64532},
+		{39.12355, 27.64532},
+		{35.12314, 27.64532},
 	}
 
-	got, err := CalculateDistanceInKm(coordinates)
+	got, err := CalculateDistance(coordinates, "km")
 	if err != nil {
 		t.Errorf("got error: %v", err)
 
@@ -24,13 +24,13 @@ func TestCalculateDistanceInKm_1(t *testing.T) {
 	}
 }
 
-func TestCalculateDistanceInKm_2(t *testing.T) {
-	coordinates := []string{
-		"35.12314, 27.64532",
-		"39.12355, 27.64538",
+func TestCalculateDistance_2(t *testing.T) {
+	coordinates := []Coordinate{
+		{35.12314, 27.64532},
+		{39.12355, 27.64538},
 	}
 
-	got, err := CalculateDistanceInKm(coordinates)
+	got, err := CalculateDistance(coordinates, "km")
 	if err != nil {
 		t.Errorf("got error: %v", err)
 
@@ -42,13 +42,13 @@ func TestCalculateDistanceInKm_2(t *testing.T) {
 	}
 }
 
-func TestCalculateDistanceInMiles_1(t *testing.T) {
-	coordinates := []string{
-		"35.12314, 27.64532",
-		"39.12355, 27.64538",
+func TestCalculateDistance_3(t *testing.T) {
+	coordinates := []Coordinate{
+		{35.12314, 27.64532},
+		{39.12355, 27.64538},
 	}
 
-	got, err := CalculateDistanceInMiles(coordinates)
+	got, err := CalculateDistance(coordinates, "mi")
 	if err != nil {
 		t.Errorf("got error: %v", err)
 
@@ -60,31 +60,17 @@ func TestCalculateDistanceInMiles_1(t *testing.T) {
 	}
 }
 
-func ExampleCalculateDistanceInKm() {
-	coordinates := []string{
-		"35.12314, 27.64532",
-		"39.12355, 27.64538",
-		"35.12314, 27.64532",
+func ExampleCalculateDistance() {
+	coordinates := []Coordinate{
+		{35.12314, 27.64532},
+		{39.12355, 27.64532},
+		{35.12314, 27.64532},
 	}
-	distance, err := CalculateDistanceInKm(coordinates)
+	distance, err := CalculateDistance(coordinates, "km")
 	if err != nil {
 		// Handle it
 	}
 	fmt.Println(distance)
 	// Output:
 	// 889.6505930598652
-}
-
-func ExampleCalculateDistanceInMiles() {
-	coordinates := []string{
-		"35.12314, 27.64532",
-		"39.12355, 27.64538",
-	}
-	distance, err := CalculateDistanceInMiles(coordinates)
-	if err != nil {
-		// Handle it
-	}
-	fmt.Println(distance)
-	// Output:
-	// 276.4015393301007
 }

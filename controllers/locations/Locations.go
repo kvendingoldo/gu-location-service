@@ -14,28 +14,65 @@ import (
 
 // GetLocation godoc
 // @Tags location
-// @Summary Search in some location within the provided radius.
+// @Summary Search users in some location within the provided radius.
 // @Description Search for users in some location within the provided radius (with pagination).
-// @Param coordinate query string true "search center "
-// @Param radius query number false "radius (in meters)"
+// @Param lat query string true "Center latitude"
+// @Param lon query string true "Center longitude"
+// @Param radius query number false "radius"
+// @Param units query string false "radius (m|km|mi|ft)"
 // @Success 200 {object} int
 // @Failure 400 {object} MessageResponse
 // @Failure 500 {object} MessageResponse
-// @Router /search [get]
+// @Router /users [get]
 func SearchByRadius(c *gin.Context) {
-	coordinate := c.Query("coordinate")
+	// return only id!!!
 
-	radius := 100.0
+	// Reference
+	// http://localhost:8080/v1/users?lat=55.751508&lon=37.615666&radius=1&units=km
+	// &page=1&limit=2
+
+	reqLat := c.Query("lat")
+	lat, err := strconv.ParseFloat(reqLat, 64)
+	if err != nil {
+		// TODO: error
+	}
+
+	reqLon := c.Query("lon")
+	lon, err := strconv.ParseFloat(reqLon, 64)
+	if err != nil {
+		// TODO: error
+	}
+
+	radius := 0.1
 	if reqRadius, ok := c.GetQuery("radius"); ok {
-		if parsedRadius, err := strconv.ParseFloat(reqRadius, 64); err == nil {
+		units := "km"
+		if reqUnits, ok := c.GetQuery("units"); ok {
+			units = reqUnits
+		}
+
+		parsedRadius, err := strconv.ParseFloat(reqRadius, 64)
+		if err != nil {
+			// TODO: error
+		}
+
+		switch units {
+		case "m":
+			radius = parsedRadius * 0.1
+		case "km":
 			radius = parsedRadius
+		case "ft":
+			radius = parsedRadius * 3280.84
+		case "mi":
+			radius = parsedRadius * 0.621371
+		default:
+			// TODO: error
 		}
 	}
 
 	pagination := utils.GeneratePaginationFromRequest(c)
-	locations, err := model.SearchLocationsWithinRadius(coordinate, radius, &pagination)
+	locations, err := model.SearchLocationsWithinRadius(lat, lon, radius, &pagination)
 	if err != nil {
-		// TODO
+		// TODO: error
 	}
 
 	uids := []int64{}
@@ -111,8 +148,9 @@ func UpdateLocation(c *gin.Context) {
 	}
 
 	location := &model.Location{
-		UID:         uid,
-		Coordinates: req.Coordinates,
+		UID:       uid,
+		Latitude:  req.Latitude,
+		Longitude: req.Longitude,
 	}
 
 	err = model.UpdateLocation(location)

@@ -7,9 +7,11 @@ import (
 )
 
 type NewLocationRequest struct {
-	UID         int64  `json:"uid,omitempty" example:"800"`
-	Username    string `json:"username,omitempty" example:"Bill"`
-	Coordinates string `json:"coordinates" example:"39.12355, 27.64538" binding:"required"`
+	UID      int64  `json:"uid,omitempty" example:"800"`
+	Username string `json:"username,omitempty" example:"Bill"`
+
+	Latitude  float64 `json:"lat" example:"39.12355" binding:"required"`
+	Longitude float64 `json:"lon" example:"27.64538" binding:"required"`
 }
 
 func (r *NewLocationRequest) validate() error {
@@ -24,22 +26,13 @@ func (r *NewLocationRequest) validate() error {
 		return err
 	}
 
-	err = utils.ValidateCoordinates(r.Coordinates)
+	err = utils.ValidateCoordinates(r.Latitude, r.Longitude)
 	fmt.Println(err)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-type NewSearchRequest struct {
-	Coordinates string `json:"coordinates" example:"39.12355, 27.64538"  binding:"required"`
-	Radius      string `json:"radius" example:"800" default:"100" binding:"optional,min=0"`
-}
-
-func (r *NewSearchRequest) validate() error {
-	return utils.ValidateCoordinates(r.Coordinates)
 }
 
 // TODO: delete

@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+type Location struct {
+	Model
+	UID int64 `json:"uid" example:"12"` // gorm:foreignKey
+
+	Latitude  float64 `json:"lat" example:"39.12355"`
+	Longitude float64 `json:"lon" example:"27.64538"`
+}
+
+// TableName represents name of SQL table, used by GORM
 func (location *Location) TableName() string {
 	return "locations"
 }
@@ -36,7 +45,7 @@ func UpdateLocation(location *Location) (err error) {
 }
 
 // SearchLocationsWithinRadius ... Search all users inside provided radius
-func SearchLocationsWithinRadius(centerCoordinates string, radius float64, pagination *Pagination) ([]Location, error) {
+func SearchLocationsWithinRadius(lat, lon, radiusInKm float64, pagination *Pagination) ([]Location, error) {
 	locations, err := GetLatestUserLocations(pagination)
 	if err != nil {
 		return []Location{}, err
@@ -45,17 +54,21 @@ func SearchLocationsWithinRadius(centerCoordinates string, radius float64, pagin
 	result := []Location{}
 
 	for _, location := range locations {
-		coordinates := []string{
-			centerCoordinates,
-			location.Coordinates,
+		coordinates := []distance.Coordinate{
+			{Latitude: lat, Longitude: lon},
+			{Latitude: location.Latitude, Longitude: location.Longitude},
 		}
 
-		distanceKm, err := distance.CalculateDistanceInKm(coordinates)
+		distanceKm, err := distance.CalculateDistance(coordinates, "km")
 		if err != nil {
 			return []Location{}, err
 		}
 
-		if distanceKm <= radius {
+		fmt.Println(coordinates)
+
+		fmt.Println(distanceKm)
+		fmt.Println(radiusInKm)
+		if distanceKm <= radiusInKm {
 			result = append(result, location)
 		}
 	}
@@ -76,7 +89,7 @@ func GetLatestUserLocations(pagination *Pagination) ([]Location, error) {
 
 	err := queryBuider.Debug().
 		Model(&Location{}).
-		Select("last_data.uid, coordinates, last_data.created_at").
+		Select("last_data.uid, latitude, longitude, last_data.created_at").
 		Joins("inner join (?) as last_data on locations.uid = last_data.uid and locations.created_at = last_data.created_at", subQuery).
 		Find(&locations).
 		Error
@@ -95,12 +108,15 @@ func GetDistance(uid int, timeRange string) (float64, error) {
 		fmt.Println(err)
 	}
 
-	coordinates := []string{}
+	coordinates := []distance.Coordinate{}
 	for _, location := range locations {
-		coordinates = append(coordinates, location.Coordinates)
+		coordinates = append(
+			coordinates,
+			distance.Coordinate{Latitude: location.Latitude, Longitude: location.Longitude},
+		)
 	}
 
-	distanceKm, err := distance.CalculateDistanceInKm(coordinates)
+	distanceKm, err := distance.CalculateDistance(coordinates, "km")
 	if err != nil {
 		fmt.Println(err)
 	}

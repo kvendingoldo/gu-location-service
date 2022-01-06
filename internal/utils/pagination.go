@@ -26,7 +26,6 @@ func GeneratePaginationFromRequest(c *gin.Context) model.Pagination {
 		case "sort":
 			sort = queryValue
 			break
-
 		}
 	}
 	return model.Pagination{

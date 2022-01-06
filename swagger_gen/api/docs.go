@@ -92,25 +92,38 @@ var doc = `{
                 }
             }
         },
-        "/search": {
+        "/users": {
             "get": {
                 "description": "Search for users in some location within the provided radius (with pagination).",
                 "tags": [
                     "location"
                 ],
-                "summary": "Search in some location within the provided radius.",
+                "summary": "Search users in some location within the provided radius.",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "search center ",
-                        "name": "coordinate",
+                        "description": "Center latitude",
+                        "name": "lat",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Center longitude",
+                        "name": "lon",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "number",
-                        "description": "radius (in meters)",
+                        "description": "radius",
                         "name": "radius",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "radius (m|km|mi|ft)",
+                        "name": "units",
                         "in": "query"
                     }
                 ],
@@ -149,12 +162,17 @@ var doc = `{
         "locations.NewLocationRequest": {
             "type": "object",
             "required": [
-                "coordinates"
+                "lat",
+                "lon"
             ],
             "properties": {
-                "coordinates": {
-                    "type": "string",
-                    "example": "39.12355, 27.64538"
+                "lat": {
+                    "type": "number",
+                    "example": 39.12355
+                },
+                "lon": {
+                    "type": "number",
+                    "example": 27.64538
                 },
                 "uid": {
                     "type": "integer",
