@@ -1,4 +1,4 @@
-package locations
+package v1
 
 import (
 	"errors"
@@ -28,26 +28,6 @@ func (r *NewLocationRequest) validate() error {
 
 	err = utils.ValidateCoordinates(r.Latitude, r.Longitude)
 	fmt.Println(err)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// TODO: delete
-type NewDistanceRequest struct {
-	ID       int    `json:"id,omitempty" example:"800"`
-	Username string `json:"username,omitempty" example:"Bill"`
-	Range    string `json:"range" example:"-1.5h"  binding:"optional"`
-}
-
-func (r *NewDistanceRequest) validate() error {
-	if r.ID == 0 && r.Username == "" {
-		return errors.New("At least one of id || username should be not empty")
-	}
-
-	err := utils.ValidateUsername(r.Username)
 	if err != nil {
 		return err
 	}

@@ -64,7 +64,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/locations.NewLocationRequest"
+                            "$ref": "#/definitions/v1.NewLocationRequest"
                         }
                     }
                 ],
@@ -123,13 +123,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/locations.MessageResponse"
+                            "$ref": "#/definitions/v1.MessageResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/locations.MessageResponse"
+                            "$ref": "#/definitions/v1.MessageResponse"
                         }
                     }
                 }
@@ -137,7 +137,7 @@
         }
     },
     "definitions": {
-        "locations.MessageResponse": {
+        "v1.MessageResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -145,7 +145,7 @@
                 }
             }
         },
-        "locations.NewLocationRequest": {
+        "v1.NewLocationRequest": {
             "type": "object",
             "required": [
                 "lat",

@@ -10,7 +10,7 @@ vet: ## Run go vet against code.
 
 ##@ Build
 swag:
-	swag init -g internal/server/rest/*.go --output ./swagger_gen/api
+	swag init -g internal/controller/rest/*/*.go --output ./swagger_gen/api
 
 build: swag fmt vet ## Build service binary.
 	go build -o bin/service cmd/app/main.go

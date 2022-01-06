@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	guLogger "github.com/kvendingoldo/gu-common/pkg/logger"
 	"github.com/kvendingoldo/gu-location-service/config"
-	"github.com/kvendingoldo/gu-location-service/internal/server/rest"
-	"github.com/kvendingoldo/gu-location-service/model"
-	"github.com/kvendingoldo/gu-location-service/pkg/logger"
+	v1 "github.com/kvendingoldo/gu-location-service/internal/controller/rest/v1"
+	"github.com/kvendingoldo/gu-location-service/internal/model"
 	"log"
 )
 
 func startHTTPServer() {
 	router := gin.New()
-	router.Use(logger.GinLogger(config.Config.Logger), gin.Recovery())
-	rest.ApplicationRouter(router)
+	router.Use(guLogger.GinLogger(config.Config.Logger), gin.Recovery())
+	v1.NewRouter(router)
 
 	if err := router.Run(fmt.Sprintf(":%v", config.Config.RestPort)); err != nil {
 		log.Fatalf("Could not start HTTP server: %v", err)

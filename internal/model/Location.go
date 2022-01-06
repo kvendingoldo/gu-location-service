@@ -3,13 +3,14 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	commonLibModels "github.com/kvendingoldo/gu-common/pkg/model"
+	"github.com/kvendingoldo/gu-location-service/internal/distance"
 	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
-	"github.com/kvendingoldo/gu-location-service/pkg/distance"
 	"time"
 )
 
 type Location struct {
-	Model
+	commonLibModels.Model
 	UID int64 `json:"uid" example:"12"` // gorm:foreignKey
 
 	Latitude  float64 `json:"lat" example:"39.12355"`
@@ -45,7 +46,7 @@ func UpdateLocation(location *Location) (err error) {
 }
 
 // SearchLocationsWithinRadius ... Search all users inside provided radius
-func SearchLocationsWithinRadius(lat, lon, radiusInKm float64, pagination *Pagination) ([]Location, error) {
+func SearchLocationsWithinRadius(lat, lon, radiusInKm float64, pagination *commonLibModels.Pagination) ([]Location, error) {
 	locations, err := GetLatestUserLocations(pagination)
 	if err != nil {
 		return []Location{}, err
@@ -64,10 +65,6 @@ func SearchLocationsWithinRadius(lat, lon, radiusInKm float64, pagination *Pagin
 			return []Location{}, err
 		}
 
-		fmt.Println(coordinates)
-
-		fmt.Println(distanceKm)
-		fmt.Println(radiusInKm)
 		if distanceKm <= radiusInKm {
 			result = append(result, location)
 		}
@@ -77,7 +74,7 @@ func SearchLocationsWithinRadius(lat, lon, radiusInKm float64, pagination *Pagin
 }
 
 // GetLatestLocations ... Search all users inside of provided radius
-func GetLatestUserLocations(pagination *Pagination) ([]Location, error) {
+func GetLatestUserLocations(pagination *commonLibModels.Pagination) ([]Location, error) {
 	var locations []Location
 
 	offset := (pagination.Page - 1) * pagination.Limit

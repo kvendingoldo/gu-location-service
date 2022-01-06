@@ -1,8 +1,7 @@
-package rest
+package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kvendingoldo/gu-location-service/controllers/locations"
 	_ "github.com/kvendingoldo/gu-location-service/swagger_gen/api"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,7 +21,7 @@ import (
 
 // @host localhost:8080
 // @BasePath /v1
-func ApplicationRouter(router *gin.Engine) {
+func NewRouter(router *gin.Engine) {
 
 	v1 := router.Group("/v1")
 	{
@@ -34,9 +33,9 @@ func ApplicationRouter(router *gin.Engine) {
 		// Locations
 		v1Locations := v1.Group("/")
 		{
-			v1Locations.GET("/distance", locations.GetDistance)
-			v1Locations.GET("/users", locations.SearchByRadius)
-			v1Locations.PUT("/location", locations.UpdateLocation)
+			v1Locations.GET("/distance", GetDistance)
+			v1Locations.GET("/users", SearchByRadius)
+			v1Locations.PUT("/location", UpdateLocation)
 		}
 	}
 }

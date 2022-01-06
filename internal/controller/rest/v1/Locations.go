@@ -1,12 +1,14 @@
-package locations
+package v1
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/kvendingoldo/gu-location-service/controllers"
-	"github.com/kvendingoldo/gu-location-service/internal/utils"
-	"github.com/kvendingoldo/gu-location-service/model"
+
+	http2 "github.com/kvendingoldo/gu-location-service/internal/controller/rest"
+	"github.com/kvendingoldo/gu-location-service/internal/model"
 	"strconv"
+
+	commonLibUtils "github.com/kvendingoldo/gu-common/pkg/utils"
 
 	guErrors "github.com/kvendingoldo/gu-location-service/internal/errors"
 	"net/http"
@@ -69,7 +71,7 @@ func SearchByRadius(c *gin.Context) {
 		}
 	}
 
-	pagination := utils.GeneratePaginationFromRequest(c)
+	pagination := commonLibUtils.GeneratePaginationFromRequest(c)
 	locations, err := model.SearchLocationsWithinRadius(lat, lon, radius, &pagination)
 	if err != nil {
 		// TODO: error
@@ -126,7 +128,7 @@ func GetDistance(c *gin.Context) {
 // @Router /location [put]
 func UpdateLocation(c *gin.Context) {
 	var req NewLocationRequest
-	if err := controllers.BindJSON(c, &req); err != nil {
+	if err := http2.BindJSON(c, &req); err != nil {
 		appError := guErrors.NewAppError(err, guErrors.ValidationError)
 		_ = c.Error(appError)
 		return
